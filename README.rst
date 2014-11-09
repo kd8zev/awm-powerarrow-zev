@@ -8,6 +8,7 @@ Installation
 
 - Clone this repository with ``git clone --recursive https://github.com/kd8zev/powerarrow-zev.git`` in order to clone the `vicious <http://git.sysphere.org/vicious/>`_ repository if you do not have Awesome's vicious package installed.
 - Copy the contents of this repositoy to ``~/.config/awesome/``
+- Replace ``~/.config/awesome/rc.lua`` with ``rc.lua.laptop`` if you want the battery monitor instead of uptime
 - Restart Asesome
 - You may need to edit rc.lua to have the names of the network devices and harddrives if your system is not set up the same way as mine - To change the wallpaper replace ``~/.config/awesome/themes/powerarrow-zev/wallpaper.jpg`` with your desired background.
 - To add/remove startup programs edit the last few lines (~line 650) of rc.lua
@@ -52,4 +53,4 @@ TODO
 Screenshot
 -------------------------------
 .. image:: screenshot.png
-
+.. image:: ./screenshot_laptop.png
