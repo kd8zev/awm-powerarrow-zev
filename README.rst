@@ -14,6 +14,21 @@ Installation
 - Change default programs (~line 50)
 - Enable/disable widgets by commenting/uncommenting ``right_layout:add(...)`` lines (~line 350)
 
+For Debian Users
+-----------------
+
+- ``sudo apt-get install cmake liblua5.1-dev imagemagick libxcb-randr0-dev libxcb-xtest0-dev libxcb-xinerama0-dev libxcb-shape0-dev libxcb-keysyms1-dev libxcb-icccm4-dev libx11-xcb-dev lua-lgi-dev libstartup-notification0-dev libxdg-basedir-dev libxcb-image0-dev libxcb-util0-dev libgdk-pixbuf2.0-dev lua5.1 libxcb-cursor-dev libcairo2-dev``
+- ``git clone git://git.naquadah.org/awesome.git``
+- ``cd awesome``
+- ``git remote add origin-debian git://git.debian.org/git/users/acid/awesome.git``
+- ``git fetch origin-debian``
+- ``cmake -DCMAKE_PREFIX_PATH=/usr -DSYSCONFDIR=/etc && make``
+- ``sudo make install``
+- ``sudo ldconfig -v``
+
+If Awesome throws errors when you try to ``Mod+Space`` to change layouts, install `Awesome 3.5.5-1 from experimental <https://packages.debian.org/experimental/awesome>`_
+
+
 Changes from esn89's theme
 --------------------------
 
