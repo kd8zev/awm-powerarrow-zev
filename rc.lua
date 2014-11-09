@@ -146,12 +146,12 @@ vicious.register(netwidget, vicious.widgets.net, function(widget, args)
     local interface = ""
     if args["{wlp2s0 carrier}"] == 1 then
         interface = "wlp2s0"
-    elseif args["{enp0s25 carrier}"] == 1 then
-        interface = "enp0s25"
+    elseif args["{enp5s0 carrier}"] == 1 then
+        interface = "enp5s0"
     else
         return ""
     end
-    return '<span background="#C2C2A4" font="' .. font .. '"> <span font ="' .. fontSmall .. '" color="#FFFFFF">'..args["{"..interface.." down_kb}"]..'kbps'..'</span></span>' end, 10)
+    return '<span background="#C2C2A4" font="' .. font .. '"> <span font ="' .. fontSmall .. '" color="#FFFFFF">' .. args["{" .. interface .. " down_kb}"] .. 'kbps' .. '</span></span>' end, 10)
 
 ---{{---| Wifi Signal Widget |-------
 neticon = wibox.widget.imagebox()
@@ -161,11 +161,18 @@ vicious.register(neticon, vicious.widgets.wifi, function(widget, args)
         neticon:set_image(beautiful.nethigh)
     elseif sigstrength > 40 and sigstrength < 70 then
         neticon:set_image(beautiful.netmedium)
-    else
+    elseif sigstrength > 0 and sigstrength < 41 then
         neticon:set_image(beautiful.netlow)
+    else -- incase there is no wifi
+        neticon:set_image(beautiful.dlicon)
     end
 end, 120, 'wlp2s0')
 
+--{{ Weather Widget }}--
+--weatherwidget = wibox.widget.textbox()
+--vicious.register(weatherwidget, vicious.widget.weather, function(widget, args)
+--    return '<span background="#C2C2A4" font="' .. font .. '"> <span font ="' .. fontSmall .. '" color="#fFFFFF">' .. {tempc}   .. ' C</span></span>' end, 22, "KCMH")
+--
 
 --{{ Battery Widget }} --
 baticon = wibox.widget.imagebox()
@@ -183,7 +190,7 @@ vicious.register(uptimewidget, vicious.widgets.uptime,
 uptimeicon = wibox.widget.imagebox()
 uptimeicon:set_image(beautiful.uptimeicon)
 
---{{---| File Size widget |-----
+--{{---| File System Widget |-----
 fswidget = wibox.widget.textbox()
 
 vicious.register(fswidget, vicious.widgets.fs,
