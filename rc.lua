@@ -42,17 +42,14 @@ end
 
 --{{---| Theme | -------------------------------------
 
--- Todo:  Please change the "ep" to your $USER
-config_dir = ("/home/ep/.config/awesome/")
-themes_dir = (config_dir .. "/powerarrowf")
-
-beautiful.init(themes_dir .. "/theme.lua")
+local theme = "powerarrow-zev"
+beautiful.init(os.getenv("HOME") .. "/.config/awesome/themes/" .. theme .. "/theme.lua")
 
 -- This is used later as the default terminal, browser and editor to run.
-terminal = "termite"
+terminal = "urxvt"
 editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
-browser = "chromium"
+browser = "firefox"
 
 font = "Inconsolata 11"
 
@@ -108,7 +105,7 @@ end
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, 2, 3}, s, layouts[1])
+    tags[s] = awful.tag({ 1, 2, 3, 4, 5, 6, 7, 8, 9 }, s, layouts[1])
 end
 -- }}}
 
@@ -367,57 +364,24 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
 
--- {{ Opens Chromium }} --
-
-awful.key({ "Control", "Shift"}, "c", function() awful.util.spawn("chromium") end),
-awful.key({ "Control", "Shift"}, "n", function() awful.util.spawn("chromium -incognito") end),
-
--- {{ Shuts down Computer }} --
-
-awful.key({ "Control",        }, "Escape", function() awful.util.spawn("systemctl poweroff") end),
-
--- {{ Spawns Skype }} --
-
-awful.key({ "Control", "Shift"}, "s", function() awful.util.spawn("skype") end),
-
--- {{ Spawns Sublime }} --
-
-awful.key({ "Control", "Shift"}, "b", function() awful.util.spawn("/opt/sublime-text/sublime_text") end),
-
--- {{ Volume Control }} --
-
-awful.key({     }, "XF86AudioRaiseVolume", function() awful.util.spawn("amixer set Master 5%+", false) end),
-awful.key({     }, "XF86AudioLowerVolume", function() awful.util.spawn("amixer set Master 5%-", false) end),
-awful.key({     }, "XF86AudioMute", function() awful.util.spawn("amixer set Master toggle", false) end),
-
--- {{ Vim-like controls:
-
-    awful.key({ modkey,           }, "l",
-        function ()
-            awful.client.focus.bydirection("right")
-            if client.focus then client.focus:raise() end
-        end),
-    awful.key({ modkey,           }, "h",
-        function ()
-            awful.client.focus.bydirection("left")
-            if client.focus then client.focus:raise() end
-        end),
     awful.key({ modkey,           }, "j",
         function ()
-            awful.client.focus.bydirection("down")
+            awful.client.focus.byidx( 1)
             if client.focus then client.focus:raise() end
         end),
     awful.key({ modkey,           }, "k",
         function ()
-            awful.client.focus.bydirection("up")
+            awful.client.focus.byidx(-1)
             if client.focus then client.focus:raise() end
         end),
+    awful.key({ modkey,           }, "w", function () mymainmenu:show() end),
 
     -- Layout manipulation
     awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end),
     awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end),
     awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
     awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
+    awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
     awful.key({ modkey,           }, "Tab",
         function ()
             awful.client.focus.history.previous()
@@ -431,8 +395,8 @@ awful.key({     }, "XF86AudioMute", function() awful.util.spawn("amixer set Mast
     awful.key({ modkey, "Control" }, "r", awesome.restart),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit),
 
-    awful.key({ modkey,           }, "i",     function () awful.tag.incmwfact( 0.05)    end),
-    awful.key({ modkey,           }, "u",     function () awful.tag.incmwfact(-0.05)    end),
+    awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)    end),
+    awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)    end),
     awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1)      end),
     awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster(-1)      end),
     awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1)         end),
@@ -458,7 +422,7 @@ awful.key({     }, "XF86AudioMute", function() awful.util.spawn("amixer set Mast
 
 clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "f",      function (c) c.fullscreen = not c.fullscreen  end),
-    awful.key({ modkey,           }, "q",      function (c) c:kill()                         end),
+    awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill()                         end),
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
     awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end),
     awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
@@ -481,6 +445,7 @@ clientkeys = awful.util.table.join(
 -- This should map on the top row of your keyboard, usually 1 to 9.
 for i = 1, 9 do
     globalkeys = awful.util.table.join(globalkeys,
+        -- View tag only.
         awful.key({ modkey }, "#" .. i + 9,
                   function ()
                         local screen = mouse.screen
@@ -489,6 +454,7 @@ for i = 1, 9 do
                            awful.tag.viewonly(tag)
                         end
                   end),
+        -- Toggle tag.
         awful.key({ modkey, "Control" }, "#" .. i + 9,
                   function ()
                       local screen = mouse.screen
@@ -497,18 +463,24 @@ for i = 1, 9 do
                          awful.tag.viewtoggle(tag)
                       end
                   end),
+        -- Move client to tag.
         awful.key({ modkey, "Shift" }, "#" .. i + 9,
                   function ()
-                      local tag = awful.tag.gettags(client.focus.screen)[i]
-                      if client.focus and tag then
-                          awful.client.movetotag(tag)
+                      if client.focus then
+                          local tag = awful.tag.gettags(client.focus.screen)[i]
+                          if tag then
+                              awful.client.movetotag(tag)
+                          end
                      end
                   end),
+        -- Toggle tag.
         awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9,
                   function ()
-                      local tag = awful.tag.gettags(client.focus.screen)[i]
-                      if client.focus and tag then
-                          awful.client.toggletag(tag)
+                      if client.focus then
+                          local tag = awful.tag.gettags(client.focus.screen)[i]
+                          if tag then
+                              awful.client.toggletag(tag)
+                          end
                       end
                   end))
 end
@@ -625,12 +597,12 @@ function run_once(cmd)
 end
 
 -- {{ I need redshift to save my eyes }} -
-run_once("redshift -l 49.26:-123.23")
-awful.util.spawn_with_shell("xmodmap ~/.speedswapper")
+run_once("redshift -l 40.00:-80.01")
+--awful.util.spawn_with_shell("xmodmap ~/.speedswapper")
 
 -- {{ Turns off the terminal bell }} --
-awful.util.spawn_with_shell("/usr/bin/xset b off")
+--awful.util.spawn_with_shell("/usr/bin/xset b off")
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+--client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+--client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
