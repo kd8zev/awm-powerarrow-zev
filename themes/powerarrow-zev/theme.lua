@@ -50,6 +50,7 @@ theme.menu_width  = 100
 --theme.bg_widget = "#cc0000"
 
 -- Define the image to load
+theme.awesome_icon = "/usr/share/awesome/icons/awesome16.png"
 theme.titlebar_close_button_normal = "/usr/share/awesome/themes/default/titlebar/close_normal.png"
 theme.titlebar_close_button_focus  = "/usr/share/awesome/themes/default/titlebar/close_focus.png"
 
@@ -104,8 +105,15 @@ theme.nethigh = pathToConfig .. "/icons/nethigh.png"
 theme.netmedium = pathToConfig .. "/icons/netmedium.png"
 theme.netlow = pathToConfig .. "/icons/netlow.png"
 
+--{{ For the Upload/Download widget icons }}--
+theme.ulicon = pathToConfig .. "/icons/upload.png"
+theme.dlicon = pathToConfig .. "./icons/download.png"
+
 --{{ For the battery icon }} --
 theme.baticon = pathToConfig .. "/icons/battery.png"
+
+--{{ For the uptime icon }} --
+theme.uptimeicon = pathToConfig .. "/icons/uptime.png"
 
 --{{ For the hard drive icon }} --
 theme.fsicon = pathToConfig .. "/icons/hdd.png"
@@ -126,10 +134,12 @@ theme.cpuicon = pathToConfig .. "/icons/cpu.png"
 --{{ For the memory icon }} --
 theme.mem = pathToConfig .. "/icons/mem.png"
 
---{{ For the memory icon }} --
+--{{ For the mail icon }} --
 theme.mail = pathToConfig .. "/icons/mail.png"
 theme.mailopen = pathToConfig .. "/icons/mailopen.png"
 
+--{{ For the MPD icon }} --
+theme.mpdicon = pathToConfig .. "/icons/mpd.png"
 
 -- Define the icon theme for application icons. If not set then the icons
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.

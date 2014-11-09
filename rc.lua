@@ -51,7 +51,8 @@ editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
 browser = "firefox"
 
-font = "Inconsolata 11"
+font = "Anonymice Powerline 12"
+fontSmall = "Anonymice Powerline 9"
 
 -- {{ These are the power arrow dividers/separators }} --
 arr1 = wibox.widget.imagebox()
@@ -84,11 +85,11 @@ modkey = "Mod4"
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
 {
-    awful.layout.suit.floating,
     awful.layout.suit.tile,
     awful.layout.suit.tile.left,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
+    awful.layout.suit.floating,
 }
 -- }}}
 
@@ -123,7 +124,7 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
                                   }
                         })
 
-mylauncher = awful.widget.launcher({ menu = mymainmenu })
+mylauncher = awful.widget.launcher({image = beautiful.awesome_icon, menu = mymainmenu })
 
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
@@ -133,7 +134,7 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 
 --{{-- Time and Date Widget }} --
 tdwidget = wibox.widget.textbox()
-local strf = '<span font="' .. font .. '" color="#EEEEEE" background="#777E76">%b %d %I:%M</span>'
+local strf = '<span font="' .. font .. '" color="#EEEEEE" background="#777E76">%y/%m/%d %H:%M</span>'
 vicious.register(tdwidget, vicious.widgets.date, strf, 20)
 
 clockicon = wibox.widget.imagebox()
@@ -150,7 +151,7 @@ vicious.register(netwidget, vicious.widgets.net, function(widget, args)
     else
         return ""
     end
-    return '<span background="#C2C2A4" font="Inconsolata 11"> <span font ="Inconsolata 11" color="#FFFFFF">'..args["{"..interface.." down_kb}"]..'kbps'..'</span></span>' end, 10)
+    return '<span background="#C2C2A4" font="' .. font .. '"> <span font ="' .. fontSmall .. '" color="#FFFFFF">'..args["{"..interface.." down_kb}"]..'kbps'..'</span></span>' end, 10)
 
 ---{{---| Wifi Signal Widget |-------
 neticon = wibox.widget.imagebox()
@@ -171,14 +172,22 @@ baticon = wibox.widget.imagebox()
 baticon:set_image(beautiful.baticon)
 
 batwidget = wibox.widget.textbox()
-vicious.register( batwidget, vicious.widgets.bat, '<span background="#92B0A0" font="Inconsolata 11"><span font="Inconsolata 11" color="#FFFFFF" background="#92B0A0">$1$2% </span></span>', 30, "BAT0" )
+vicious.register( batwidget, vicious.widgets.bat, '<span background="#92B0A0" font="' .. font .. '"><span font="' .. fontSmall .. '" color="#FFFFFF" background="#92B0A0">$1$2% </span></span>', 30, "BAT0" )
 
+--{{ Uptime Widget }} --
+uptimewidget = wibox.widget.textbox()
+vicious.register(uptimewidget, vicious.widgets.uptime,
+  function (widget, args)
+    return string.format('<span background="#92B0A0" font="' .. font .. '"> <span font="' .. fontSmall .. '" color="#EEEEEE">%2dd %02d:%02d </span></span>', args[1], args[2], args[3])
+  end, 61)
+uptimeicon = wibox.widget.imagebox()
+uptimeicon:set_image(beautiful.uptimeicon)
 
 --{{---| File Size widget |-----
 fswidget = wibox.widget.textbox()
 
 vicious.register(fswidget, vicious.widgets.fs,
-'<span background="#D0785D" font="Inconsolata 11"> <span font="Inconsolata 11" color="#EEEEEE">${/home used_gb}/${/home avail_gb} GB </span></span>', 
+'<span background="#D0785D" font="' .. font .. '"> <span font="' .. fontSmall .. '" color="#EEEEEE">/ ${/ avail_gb}G <span color="#888888">·</span> /home ${/home avail_gb}G </span></span>', 
 800)
 
 fsicon = wibox.widget.imagebox()
@@ -187,7 +196,7 @@ fsicon:set_image(beautiful.fsicon)
 ----{{--| Volume / volume icon |----------
 volume = wibox.widget.textbox()
 vicious.register(volume, vicious.widgets.volume,
-'<span background="#4B3B51" font="Inconsolata 11"><span font="Inconsolata 11" color="#EEEEEE"> Vol:$1 </span></span>', 0.3, "Master")
+'<span background="#4B3B51" font="' .. font .. '"> <span font="' .. fontSmall .. '" color="#EEEEEE"> $1 </span></span>', 0.3, "Master")
 
 volumeicon = wibox.widget.imagebox()
 vicious.register(volumeicon, vicious.widgets.volume, function(widget, args)
@@ -206,17 +215,25 @@ vicious.register(volumeicon, vicious.widgets.volume, function(widget, args)
 end, 0.3, "Master")
 
 --{{---| CPU / sensors widget |-----------
-cpuwidget = wibox.widget.textbox()
-vicious.register(cpuwidget, vicious.widgets.cpu,
-'<span background="#4B696D" font="Inconsolata 11"> <span font="Inconsolata 11" color="#DDDDDD">$2%<span color="#888888">·</span>$3% </span></span>', 5)
+cpuwidget = awful.widget.graph()
+cpuwidget:set_width(25)
+cpuwidget:set_background_color("#4b696d")
+cpuwidget:set_color({ type = "linear", from = { 0, 0 }, to = { 10,0 }, stops = { {0, "#FF5656"}, {0.5, "#88A175"},{1, "#AECF96" }}})
+vicious.register(cpuwidget, vicious.widgets.cpu, "$1")
 
 cpuicon = wibox.widget.imagebox()
 cpuicon:set_image(beautiful.cpuicon)
 
 --{{--| MEM widget |-----------------
-memwidget = wibox.widget.textbox()
+memwidget = awful.widget.progressbar()
+memwidget:set_width(7)
+memwidget:set_height(10)
+memwidget:set_vertical(true)
+memwidget:set_background_color("#777e76")
+memwidget:set_border_color(nil)
+memwidget:set_color({ type = "linear", from = { 0,10 }, to = { 0,0 }, stops = { {0, "#AECF96"}, {0.5, "#88A175"},{1, "#FF5656"}}})
+vicious.register(memwidget, vicious.widgets.mem, "$1", 13)
 
-vicious.register(memwidget, vicious.widgets.mem, '<span background="#777E76" font="Inconsolata 11"> <span font="Inconsolata 11" color="#EEEEEE" background="#777E76">$2MB </span></span>', 20)
 memicon = wibox.widget.imagebox()
 memicon:set_image(beautiful.mem)
 
@@ -236,6 +253,16 @@ end, 15)
 mailicon:buttons(awful.util.table.join(awful.button({ }, 1,
 function () awful.util.spawn_with_shell(browser .. " gmail.com") end)))
 
+--{{ Music Widget }} --
+mpdwidget = wibox.widget.textbox()
+vicious.register(mpdwidget, vicious.widgets.mpd,
+  function (widget, args)
+    if   args["{state}"] == "Stop" then return '<span background="#313131" font="' .. font .. '"> <span font="' .. fontSmall .. '" color="#EEEEEE">Not Playing </span></span>'
+    else return '<span background="#313131" font="' .. font .. '"> <span font="' .. fontSmall .. '" color="#EEEEEE">' ..args["{Artist}"]..' - '.. args["{Title}"] ..'</span></span>'
+    end
+  end)
+mpdicon = wibox.widget.imagebox()
+mpdicon:set_image(beautiful.mpdicon)
 
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -313,9 +340,10 @@ for s = 1, screen.count() do
 
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
-    if s == 1 then right_layout:add(wibox.widget.systray()) end
     right_layout:add(arr9)
-    right_layout:add(mailicon)
+    right_layout:add(mpdicon)
+    right_layout:add(mpdwidget) 
+--    right_layout:add(mailicon)
     right_layout:add(arr8)
     right_layout:add(memicon)
     right_layout:add(memwidget)
@@ -329,8 +357,10 @@ for s = 1, screen.count() do
     right_layout:add(fsicon)
     right_layout:add(fswidget)
     right_layout:add(arr4)
-    right_layout:add(baticon)
-    right_layout:add(batwidget)
+    right_layout:add(uptimeicon)
+    right_layout:add(uptimewidget) 
+--    right_layout:add(baticon)
+--    right_layout:add(batwidget)
     right_layout:add(arr3)
     right_layout:add(neticon)
     right_layout:add(netwidget)
@@ -338,6 +368,7 @@ for s = 1, screen.count() do
     right_layout:add(clockicon)
     right_layout:add(tdwidget)
     right_layout:add(arr1)
+    if s == 1 then right_layout:add(wibox.widget.systray()) end
     right_layout:add(mylayoutbox[s])
 
     -- Now bring it all together (with the tasklist in the middle)
@@ -417,7 +448,18 @@ globalkeys = awful.util.table.join(
                   awful.util.getdir("cache") .. "/history_eval")
               end),
     -- Menubar
-    awful.key({ modkey }, "p", function() menubar.show() end)
+    awful.key({ modkey }, "p", function() menubar.show() end),
+    
+    -- Multimedia keys
+    awful.key({ }, "XF86AudioPlay", function () awful.util.spawn("mpc toggle") end),
+    awful.key({ }, "XF86AudioNext", function () awful.util.spawn("mpc next") end),
+    awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("mpc prev") end),
+    awful.key({ }, "XF86AudioRaiseVolume", function () awful.util.spawn("amixer -c 0 set Master 1dB+") end),
+    awful.key({ }, "XF86AudioLowerVolume", function () awful.util.spawn("amixer -c 0 set Master 1dB-") end),
+    awful.key({ }, "XF86AudioMute", function () awful.util.spawn("amixer -c 0 set Master toggle") end),
+
+    -- Misc Util Keys
+    awful.key({ modkey, "Control" }, "Tab",function () awful.util.spawn("xscreensaver-command --lock") end)
 )
 
 clientkeys = awful.util.table.join(
@@ -597,6 +639,10 @@ function run_once(cmd)
 end
 
 -- {{ I need redshift to save my eyes }} -
+run_once("xbattbar -c")
+run_once("xscreensaver -no-splash")
+run_once("nm-applet")
+run_once("owncloud")
 run_once("redshift -l 40.00:-80.01")
 --awful.util.spawn_with_shell("xmodmap ~/.speedswapper")
 
