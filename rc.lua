@@ -451,6 +451,7 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey }, "p", function() menubar.show() end),
     
     -- Multimedia keys
+    awful.key({ }, "XF86AudioStop", function () awful.util.spawn("mpc clear") end),
     awful.key({ }, "XF86AudioPlay", function () awful.util.spawn("mpc toggle") end),
     awful.key({ }, "XF86AudioNext", function () awful.util.spawn("mpc next") end),
     awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("mpc prev") end),
